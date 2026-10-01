@@ -13,13 +13,13 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `Toilet Repair ${state.name} | Emergency Toilet Plumbers`,
-    description: `Need same day toilet repair in ${state.name}? Toilet Fixers provides 24/7 toilet unclogging, leak detection, running toilet diagnostics & repairs across ${state.name}. Call 833-845-0906!`,
+    description: `Need toilet repair in ${state.name}? 24/7 toilet unclogging, leak detection & fast repairs across ${state.code}. Call 833-845-0906!`,
     alternates: {
       canonical: `https://toiletfixers.us/states/${state.slug}/`,
     },
     openGraph: {
       title: `Toilet Repair ${state.name} | Emergency Toilet Plumbers`,
-      description: `Need same day toilet repair in ${state.name}? Toilet Fixers provides 24/7 toilet unclogging, leak detection, running toilet diagnostics & repairs across ${state.name}. Call 833-845-0906!`,
+      description: `Need toilet repair in ${state.name}? 24/7 toilet unclogging, leak detection & fast repairs across ${state.code}. Call 833-845-0906!`,
       url: `https://toiletfixers.us/states/${state.slug}/`,
     },
   };

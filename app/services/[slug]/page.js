@@ -11,7 +11,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `${service.title} | Toilet Fixers`,
-    description: service.shortDesc + " Fast same-day service, flat-rate pricing. Call 833-845-0906!",
+    description: `${service.shortDesc} Fast same-day service. Call 833-845-0906!`,
     alternates: {
       canonical: `https://toiletfixers.us/services/${service.slug}/`,
     },
