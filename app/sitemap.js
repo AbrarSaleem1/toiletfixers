@@ -1,5 +1,6 @@
 import { getAllStates } from "../lib/locations";
 import { SERVICES } from "../lib/services";
+import citiesByStateData from "../data/citiesByState.json";
 
 export default function sitemap() {
   const baseUrl = "https://toiletfixers.us";
@@ -27,5 +28,18 @@ export default function sitemap() {
     priority: 0.8,
   }));
 
-  return [...staticRoutes, ...serviceRoutes, ...stateRoutes];
+  const cityRoutes = [];
+  for (const [stateSlug, cities] of Object.entries(citiesByStateData)) {
+    for (const citySlug of cities) {
+      cityRoutes.push({
+        url: `${baseUrl}/${stateSlug}/${citySlug}/`,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.7,
+      });
+    }
+  }
+
+  return [...staticRoutes, ...serviceRoutes, ...stateRoutes, ...cityRoutes];
 }
+
