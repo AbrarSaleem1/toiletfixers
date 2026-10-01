@@ -16,13 +16,13 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `Toilet Repair ${cityName}, ${state.code} | Professional Toilet Repair`,
-    description: `Need toilet repair in ${cityName}, ${state.code}? Toilet Fixers offers 24/7 toilet repair, unclogging & leak repair for all makes, with fast plumbing service. Call 833-845-0906!`,
+    description: `Need toilet repair in ${cityName}, ${state.code}? 24/7 toilet repair, unclogging & leak repair for all makes with fast local service. Call 833-845-0906!`,
     alternates: {
       canonical: `https://toiletfixers.us/${state.slug}/${citySlug}/`,
     },
     openGraph: {
       title: `Toilet Repair ${cityName}, ${state.code} | Professional Toilet Repair`,
-      description: `Need toilet repair in ${cityName}, ${state.code}? We offer toilet repair, unclogging & replacement for all makes, with fast local service. Call 833-845-0906!`,
+      description: `Need toilet repair in ${cityName}, ${state.code}? 24/7 toilet repair, unclogging & leak repair for all makes with fast local service. Call 833-845-0906!`,
       url: `https://toiletfixers.us/${state.slug}/${citySlug}/`,
     },
   };
