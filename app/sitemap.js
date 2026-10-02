@@ -2,6 +2,8 @@ import { getAllStates } from "../lib/locations";
 import { SERVICES } from "../lib/services";
 import citiesByStateData from "../data/citiesByState.json";
 
+export const dynamic = "force-static";
+
 export default function sitemap() {
   const baseUrl = "https://toiletfixers.us";
 

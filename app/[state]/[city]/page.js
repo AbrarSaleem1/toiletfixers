@@ -4,6 +4,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getState, formatCityName, isValidCity, getCitiesForState } from "../../../lib/locations";
 import { SERVICES } from "../../../lib/services";
+import citiesByStateData from "../../../data/citiesByState.json";
+
+export function generateStaticParams() {
+  const params = [];
+  for (const [stateSlug, cities] of Object.entries(citiesByStateData)) {
+    for (const citySlug of cities) {
+      params.push({ state: stateSlug, city: citySlug });
+    }
+  }
+  return params;
+}
 
 export async function generateMetadata({ params }) {
   const { state: stateSlug, city: citySlug } = await params;

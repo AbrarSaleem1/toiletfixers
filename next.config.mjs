@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
 };
-
-import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev?.()).catch(() => {});
 
 export default nextConfig;
 

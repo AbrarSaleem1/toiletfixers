@@ -4,6 +4,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SERVICES, getService } from "../../../lib/services";
 
+export function generateStaticParams() {
+  return SERVICES.map((service) => ({
+    slug: service.slug,
+  }));
+}
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const service = getService(slug);

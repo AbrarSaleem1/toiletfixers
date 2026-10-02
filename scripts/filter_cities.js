@@ -1,6 +1,6 @@
 const fs = require('fs');
 const readline = require('readline');
-const citiesByState = require('../data/citiesByState.json');
+const { execSync } = require('child_process');
 const states = require('../data/states.json');
 const { SERVICES } = require('../lib/services');
 
@@ -48,6 +48,11 @@ async function main() {
     process.exit(1);
   }
 
+  // Load original 30,909 cities from git commit e38b850
+  console.log('Fetching original 30,909 cities from git commit e38b850...');
+  const originalJsonStr = execSync('git show e38b850:data/citiesByState.json', { maxBuffer: 20 * 1024 * 1024 }).toString();
+  const originalCitiesByState = JSON.parse(originalJsonStr);
+
   const rl = readline.createInterface({
     input: fs.createReadStream(csvPath),
     crlfDelay: Infinity
@@ -90,7 +95,7 @@ async function main() {
   }
 
   const allCities = [];
-  for (const [stateSlug, cList] of Object.entries(citiesByState)) {
+  for (const [stateSlug, cList] of Object.entries(originalCitiesByState)) {
     for (const citySlug of cList) {
       const key = `${stateSlug}:${citySlug}`;
       let pop = popLookup.get(key);
@@ -106,34 +111,29 @@ async function main() {
     }
   }
 
-  // Sort by population descending; deterministic secondary sort by stateSlug, then citySlug
+  // Sort descending by population
   allCities.sort((a, b) => {
     if (b.pop !== a.pop) return b.pop - a.pop;
     if (a.stateSlug !== b.stateSlug) return a.stateSlug.localeCompare(b.stateSlug);
     return a.citySlug.localeCompare(b.citySlug);
   });
 
-  // Calculate target:
-  // Static routes = 6
-  // Services = SERVICES.length (8)
-  // States = Object.keys(states).length (51)
-  // Non-city routes = 6 + 8 + 51 = 65
-  // Target total pages = 19,000
-  // Target cities = 19,000 - 65 = 18,935 cities
-  const nonCityRoutes = 6 + SERVICES.length + Object.keys(states).length;
-  const targetTotalPages = 19000;
-  const targetCitiesCount = targetTotalPages - nonCityRoutes; // 18935
-
-  const keptCities = allCities.slice(0, targetCitiesCount);
-  const removedCities = allCities.slice(targetCitiesCount);
+  // Target cities: 9,600
+  // Each city page generates:
+  // 1 index.html + 1 [city].rsc = 2 files
+  // 9,600 * 2 = 19,200 files
+  // Non-city pages (~65 routes * 2 = ~130 files)
+  // Assets (images, css, js chunks) = ~70 files
+  // Total in out folder: ~19,400 files (strictly < 20,000 Cloudflare Pages limit)
+  const targetCount = 9600;
+  const keptCities = allCities.slice(0, targetCount);
+  const removedCities = allCities.slice(targetCount);
 
   console.log(`Original cities count: ${allCities.length}`);
-  console.log(`Target total website pages: ${targetTotalPages}`);
-  console.log(`Non-city pages (static + services + states): ${nonCityRoutes}`);
   console.log(`Cities kept: ${keptCities.length}`);
   console.log(`Cities removed: ${removedCities.length}`);
-  console.log(`Lowest population kept: ${keptCities[keptCities.length - 1].pop} (${keptCities[keptCities.length - 1].citySlug}, ${keptCities[keptCities.length - 1].stateSlug})`);
-  console.log(`Highest population removed: ${removedCities[0].pop} (${removedCities[0].citySlug}, ${removedCities[0].stateSlug})`);
+  console.log(`Cutoff population at rank ${targetCount}: ${keptCities[keptCities.length - 1].pop} (${keptCities[keptCities.length - 1].citySlug}, ${keptCities[keptCities.length - 1].stateSlug})`);
+  console.log(`First excluded population: ${removedCities[0].pop} (${removedCities[0].citySlug}, ${removedCities[0].stateSlug})`);
 
   // Group kept cities by state and sort alphabetically within each state
   const newCitiesByState = {};
@@ -155,11 +155,10 @@ async function main() {
     verifiedTotal += newCitiesByState[stateSlug].length;
   }
   console.log(`Verified total kept in new object: ${verifiedTotal}`);
-  console.log(`Total URLs in sitemap will be: ${verifiedTotal + nonCityRoutes}`);
+  console.log(`Total URLs in sitemap will be: ${verifiedTotal + 6 + SERVICES.length + Object.keys(states).length}`);
 
-  // Write new citiesByState.json
   fs.writeFileSync('data/citiesByState.json', JSON.stringify(newCitiesByState, null, 2));
-  console.log('Successfully wrote updated data/citiesByState.json');
+  console.log('Successfully wrote updated data/citiesByState.json for 20k Cloudflare Pages limit');
 }
 
 main().catch(console.error);

@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "opennextjs-cloudflare build",
-    "build:next": "next build",
+    "build": "next build && node scripts/cleanup_export.js",
+    "build:worker": "opennextjs-cloudflare build",
     "start": "next start",
     "preview": "opennextjs-cloudflare build && wrangler dev",
     "deploy": "opennextjs-cloudflare build && wrangler deploy"

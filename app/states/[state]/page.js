@@ -3,8 +3,14 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import CityFilterList from "../../components/CityFilterList";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getState, getCitiesForState } from "../../../lib/locations";
+import { getState, getCitiesForState, getAllStates } from "../../../lib/locations";
 import { SERVICES } from "../../../lib/services";
+
+export function generateStaticParams() {
+  return getAllStates().map((st) => ({
+    state: st.slug,
+  }));
+}
 
 export async function generateMetadata({ params }) {
   const { state: stateSlug } = await params;
