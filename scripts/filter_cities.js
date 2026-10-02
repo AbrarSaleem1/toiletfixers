@@ -118,14 +118,8 @@ async function main() {
     return a.citySlug.localeCompare(b.citySlug);
   });
 
-  // Target cities: 9,600
-  // Each city page generates:
-  // 1 index.html + 1 [city].rsc = 2 files
-  // 9,600 * 2 = 19,200 files
-  // Non-city pages (~65 routes * 2 = ~130 files)
-  // Assets (images, css, js chunks) = ~70 files
-  // Total in out folder: ~19,400 files (strictly < 20,000 Cloudflare Pages limit)
-  const targetCount = 9600;
+  // Target cities: 18,000 top population cities
+  const targetCount = 18000;
   const keptCities = allCities.slice(0, targetCount);
   const removedCities = allCities.slice(targetCount);
 
